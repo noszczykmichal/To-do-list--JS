@@ -37,7 +37,8 @@ function LoadObjList(array){
 //usuwanie danych ze schowka
 
 clear.addEventListener("click", function(){
-    localStorage.clear
+    localStorage.clear();
+    location.reload();
 })
 
 //wyświetlanie aktualnej daty
