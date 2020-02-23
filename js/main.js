@@ -74,7 +74,7 @@ function addToDo (toDo, id, done, trash){
 
 document.addEventListener("keyup", function(event){
     if(event.keyCode==13){
-        const toDo=input.value;
+        const toDo=input.value.trim(); // dodaje trim() dla pewności że nie zostaną przekazane same spacje
         //sprawdzamy czy z inputa nie jest przekazywana pusty string
         if(toDo!==""){
             addToDo(toDo, id, false, false);
@@ -99,7 +99,7 @@ document.addEventListener("keyup", function(event){
 //dodanie obsługi eventa dla ikony plusa
 
 btnPlus.addEventListener("click", function(){
-        const toDo=input.value;
+        const toDo=input.value.trim();// dodaje trim() dla pewności że nie zostaną przekazane same spacje
         //sprawdzamy czy z inputa nie jest przekazywana pusty string
         if(toDo!==""){
             addToDo(toDo, id, false, false);
