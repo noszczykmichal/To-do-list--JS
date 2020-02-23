@@ -3,7 +3,8 @@ const clear=document.querySelector(".clear");
 const dateElem=document.getElementById("date");
 const list=document.getElementById("list");
 const input=document.getElementById("input");
-let btnPlus=document.querySelector("[class*=fa-plus-circle]");
+const btnPlus=document.querySelector("[class*=fa-plus-circle]");
+const time=document.getElementById("time");
 // console.log("TCL: btnPlus", btnPlus)
 
 // zmienne class'y
@@ -48,6 +49,14 @@ const options= {weekday:"short", month:"long", day:"numeric"}
 const today= new Date();
 
 dateElem.innerHTML=today.toLocaleDateString("pl-PL", options)
+
+//i godziny
+function whatTime(){
+    const hour= (new Date()).toLocaleTimeString("pl-PL");
+    return time.innerHTML=hour;
+}
+
+setInterval(whatTime, 1000)
 
 //funkcja addToDo
 

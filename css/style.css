@@ -54,6 +54,13 @@ body{
     font-family: 'Titillium Web', sans-serif;
 }
 
+#time{
+    position: absolute;
+    color: #fff;
+    bottom: 10px;
+    right: 10px;
+}
+
 /* content */
 
 .content{
