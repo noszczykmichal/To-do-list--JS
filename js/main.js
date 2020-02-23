@@ -3,6 +3,8 @@ const clear=document.querySelector(".clear");
 const dateElem=document.getElementById("date");
 const list=document.getElementById("list");
 const input=document.getElementById("input");
+let btnPlus=document.querySelector("[class*=fa-plus-circle]");
+// console.log("TCL: btnPlus", btnPlus)
 
 // zmienne class'y
 
@@ -70,11 +72,11 @@ function addToDo (toDo, id, done, trash){
 
 //dodawanie elementu do listy po wciśnięciu 'Enter'
 
-document.addEventListener('keyup', function(event){
+document.addEventListener("keyup", function(event){
     if(event.keyCode==13){
         const toDo=input.value;
         //sprawdzamy czy z inputa nie jest przekazywana pusty string
-        if(toDo){
+        if(toDo!==""){
             addToDo(toDo, id, false, false);
             objList.push({
                 name: toDo,
@@ -91,6 +93,29 @@ document.addEventListener('keyup', function(event){
         }
         input.value="";
     }
+    
+});
+
+//dodanie obsługi eventa dla ikony plusa
+
+btnPlus.addEventListener("click", function(){
+        const toDo=input.value;
+        //sprawdzamy czy z inputa nie jest przekazywana pusty string
+        if(toDo!==""){
+            addToDo(toDo, id, false, false);
+            objList.push({
+                name: toDo,
+                id: id,
+                done: false,
+                trash: false,
+            });
+
+            //dodawanie elementów do schowka (kod dodawany w każdym miejscu gdzie dopisywane są dane do tablicy z elementami listy)
+            localStorage.setItem("TODO", JSON.stringify(objList));
+
+            id++;
+        }
+        input.value="";
     
 });
 
