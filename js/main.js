@@ -1,65 +1,59 @@
-//pobieram elementy do zmiennych
+//assigning elements from DOM to variables
 const clear = document.querySelector(".clear");
 const dateElem = document.getElementById("date");
 const list = document.getElementById("list");
 const input = document.getElementById("input");
 const btnPlus = document.querySelector("[class*=fa-plus-circle]");
 const time = document.getElementById("time");
-// console.log("TCL: btnPlus", btnPlus)
 
-// zmienne class'y
-
+// utility classes
 const check = "fa-check-circle";
 const uncheck = "fa-circle";
 const lineThrough = "lineThrough";
 
-//zmienne
 let objList, id;
 
-//pobieranie elementów ze schowka
+//assigning variable to data retrieved from localStorage
 let data = localStorage.getItem("TODO");
 
-//sprawdzanie czy w schowków przetrzymywane są dane
-
+// function loadObjList -loads list of items that is retrived from localStorage
+function loadObjList(array) {
+  array.forEach(function (item) {
+    addToDo(item.name, item.id, item.done, item.trash);
+  });
+}
+//checking if there are any data that are stored locally
 if (data) {
   objList = JSON.parse(data);
   id = objList.length; //określamy jakie id będzie mieć kolejny dodany element sprawdzając długość tablicy
-  LoadObjList(objList); //załadowanie listy po odświeżeniu strony na podstawie danych pobranych ze schowka
+  loadObjList(objList); //załadowanie listy po odświeżeniu strony na podstawie danych pobranych ze schowka
 } else {
   //jeśli schowek jest pusty- ustawiamy zmienną objList jako tablicę, a wartość id na równą 0
   objList = [];
   id = 0;
 }
 
-//dodanie funkcji LoadObjList, która załaduje listę elementów przechowywanych w schowku
-function LoadObjList(array) {
-  array.forEach(function (item) {
-    addToDo(item.name, item.id, item.done, item.trash);
-  });
-}
 
-//usuwanie danych ze schowka
+//clearing of localStorage
 
 clear.addEventListener("click", function () {
   localStorage.clear();
   location.reload();
 });
 
-//wyświetlanie aktualnej daty
+//display of current date
 const options = { weekday: "short", month: "long", day: "numeric" };
 const today = new Date();
 
 dateElem.innerHTML = today.toLocaleDateString("pl-PL", options);
 
-//i godziny
+//and time
 function whatTime() {
   const hour = new Date().toLocaleTimeString("pl-PL");
   return (time.innerHTML = hour);
 }
 
 setInterval(whatTime, 1000);
-
-//funkcja addToDo
 
 function addToDo(toDo, id, done, trash) {
   //jeśli element znajduje się w koszu pozostała część kodu się nie wykona
@@ -85,8 +79,8 @@ function addToDo(toDo, id, done, trash) {
 // entered input validation -if entered item is valid eg. is not an empty string its added locally to objList and then to localStorage
 
 function validate() {
-  const toDo = input.value.trim(); // dodaje trim() dla pewności że nie zostaną przekazane same spacje
-  //sprawdzamy czy z inputa nie jest przekazywana pusty string
+  const toDo = input.value.trim(); // using 'trim' to make sure that user didn't enter just whitespaces
+  //and whether now current value of 'toDo' is not equal to an empty string
   if (toDo !== "") {
     addToDo(toDo, id, false, false);
     objList.push({
@@ -96,7 +90,7 @@ function validate() {
       trash: false,
     });
 
-    //dodawanie elementów do schowka (kod dodawany w każdym miejscu gdzie dopisywane są dane do tablicy z elementami listy)
+    //current value of 'objList' variable is added to localStorage
     localStorage.setItem("TODO", JSON.stringify(objList));
 
     id++;
