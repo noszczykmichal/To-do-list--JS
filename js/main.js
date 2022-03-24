@@ -11,31 +11,26 @@ const check = "fa-check-circle";
 const uncheck = "fa-circle";
 const lineThrough = "lineThrough";
 
-let objList, id;
+let objList;
 
 //assigning variable to data retrieved from localStorage
 let data = localStorage.getItem("TODO");
 
-// function loadObjList -loads list of items that is retrived from localStorage
-function loadObjList(array) {
-  array.forEach(function (item) {
-    addToDo(item.name, item.id, item.done, item.trash);
-  });
-}
-//checking if there are any data that are stored locally
-if (data) {
-  objList = JSON.parse(data);
-  id = objList.length; //określamy jakie id będzie mieć kolejny dodany element sprawdzając długość tablicy
-  loadObjList(objList); //załadowanie listy po odświeżeniu strony na podstawie danych pobranych ze schowka
-} else {
-  //jeśli schowek jest pusty- ustawiamy zmienną objList jako tablicę, a wartość id na równą 0
-  objList = [];
-  id = 0;
+function loadObjList() {
+  //checking if there are any data that are stored locally
+  if (data) {
+    objList = JSON.parse(data);
+    objList.forEach(item =>
+      addToDo(item.name, item.id, item.done, item.trash)
+    );
+  } else {
+    objList = []; //if there is none an empty array is assigned
+  }
 }
 
+loadObjList();//initial list load
 
 //clearing of localStorage
-
 clear.addEventListener("click", function () {
   localStorage.clear();
   location.reload();
@@ -56,7 +51,7 @@ function whatTime() {
 setInterval(whatTime, 1000);
 
 function addToDo(toDo, id, done, trash) {
-  //jeśli element znajduje się w koszu pozostała część kodu się nie wykona
+  //if element is in trash it won't be rendered to the DOM
   if (trash) {
     return;
   }
@@ -65,23 +60,22 @@ function addToDo(toDo, id, done, trash) {
   const line = done ? lineThrough : "";
 
   const item = `
-                <li class="item">
-                    <i class="far ${isDone} co" job="complete" id="${id}"></i>
+                <li class="item" id="${id}">
+                    <i class="far ${isDone} co" job="complete"></i>
                     <p class="text ${line}">${toDo}</p>
-                    <i class="far fa-trash-alt de" job="delete" id="${id}"></i>
+                    <i class="far fa-trash-alt de" job="delete"></i>
                 </li>
                 `;
-  const postion = "beforeend";
 
-  list.insertAdjacentHTML(postion, item);
+  list.insertAdjacentHTML("beforeend", item);
 }
 
-// entered input validation -if entered item is valid eg. is not an empty string its added locally to objList and then to localStorage
-
+//entered input validation -if entered item is valid (is not an empty string) it's added locally to the objList and then to the localStorage
 function validate() {
   const toDo = input.value.trim(); // using 'trim' to make sure that user didn't enter just whitespaces
   //and whether now current value of 'toDo' is not equal to an empty string
   if (toDo !== "") {
+    const id = Math.random().toString();
     addToDo(toDo, id, false, false);
     objList.push({
       name: toDo,
@@ -92,59 +86,52 @@ function validate() {
 
     //current value of 'objList' variable is added to localStorage
     localStorage.setItem("TODO", JSON.stringify(objList));
-
-    id++;
   }
   input.value = "";
 }
 
-//dodawanie elementu do listy po wciśnięciu 'Enter'
-
+//entered input will be added to the list after hitting 'Enter' button
 document.addEventListener("keyup", function (event) {
   if (event.key === "Enter") {
     validate();
   }
 });
 
-//dodanie obsługi eventa dla ikony plusa
-
+//addEventListener for the 'plus' icon
 btnPlus.addEventListener("click", function () {
   validate();
 });
 
-//funkcja completeToDo->zmiana klas po zaznaczeniu "tick'a" przy pozycji na liście
-
-function completeToDo(element) {
+//function completeToDo-> toggling classes for list elements(done/ not done)
+function completeToDo(element, parentElemId) {
   element.classList.toggle(check);
   element.classList.toggle(uncheck);
   element.parentNode.querySelector(".text").classList.toggle(lineThrough);
-
-  if (objList[element.id].done == true) {
-    return objList[element.id].done == false;
-  } else {
-    return objList[element.id].done == true;
-  }
+  objList
+    .filter((item) => item.id === parentElemId)
+    .map((item) => (item.done = !item.done));
 }
 
-//funkcja removeToDo-> usunięcie elemntu z listy użytkownika
-
-function removeToDo(element) {
-  element.parentNode.parentNode.removeChild(element.parentNode);
-  objList[element.id].trash = true;
+//function removeToDo-> for removing list element after clicking on 'trash' icon + updating data in objList
+function removeToDo(parentElemId) {
+  const listEl = document.getElementById(parentElemId);
+  objList.map((item) =>
+    item.id === parentElemId ? (item.trash = true) : null
+  );
+  list.removeChild(listEl);
 }
-
-//dodanie addEventListener'a do dynamicznie tworzonych elementów listy
 
 list.addEventListener("click", function (event) {
-  const element = event.target; //zwraca kliknięty element wewnatrz listy
-  const elementJob = element.attributes.job.value; //pobranie atrybutu job elementu: complete || delete
+  const element = event.target; 
+  const elementJob = element.attributes.job.value; //getting the value of element's 'job' attribute: complete || delete
+  const parentElemId = element.parentNode.getAttribute("id");
 
-  if (elementJob == "complete") {
-    completeToDo(element);
-  } else if (elementJob == "delete") {
-    removeToDo(element);
+  if (elementJob === "complete") {
+    completeToDo(element, parentElemId);
+  } else if (elementJob === "delete") {
+    removeToDo(parentElemId);
   }
 
-  //dodawanie elementów do schowka (kod dodawany w każdym miejscu gdzie dopisywane są dane do tablicy z elementami listy)
+  //updating data stored in the localStorage
   localStorage.setItem("TODO", JSON.stringify(objList));
 });
