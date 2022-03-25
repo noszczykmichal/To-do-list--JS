@@ -45,9 +45,9 @@ or check a live demo [_here_](https://noszczykmichal.github.io/to-do-list/index.
 
 ## Project Status
 Project is completed and probably won't be developed with this setup. In the future I'm going to recreate this project with diffrent setup (React.js) adding new features e.g. 
--list saved online 
--many lists saved by the same user
--browsing through all the lists user has saved 
+- list saved online 
+- many lists saved by the same user
+- browsing through all the lists user has saved 
 
 
 ## Acknowledgements
