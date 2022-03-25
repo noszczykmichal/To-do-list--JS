@@ -30,7 +30,7 @@
 
 
 ## Screenshots
-![Example screenshot](./img/screenshot.png)
+![Example screenshot](./img/screenshot.PNG)
 
 
 ## Usage
